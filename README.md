@@ -1,6 +1,6 @@
 
 # ijkplayer
-已编译好的ijkplayer支持ffmeg所支持的所有格式.
+已编译好的ijkplayer支持ffmpeg所支持的所有格式.
 如需自己编译参照如下指南
 
 # MAC编译ijkplayer指南(Android版本)
@@ -16,55 +16,48 @@
 找到你的MAC上的终端,照着下面开始敲代码   
 `ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)`   
 `brew install git`   
-`brew install yasm`   
+`brew install yasm` 
 
+4. 配置SDK,NDK的环境变量   
+`vim .bash_profile`   
+`i`      
+`export ANDROID_SDK=<你的SDK路径>`   
+`export ANDROID_NDK=<你的NDK路径>`   
+`esc`   
+`:wq`   
+`source .bash_profile`   
+到这儿准备工作差不多就结束了,下面就是大家伙了
 
-## 二、准备源码
-https://github.com/Bilibili/ijkplayer#build-android
-1. 配置环境变量
-$ export ANDROID_SDK=$HOME/android-sdk
-// $ export ANDROID_NDK=$ANDROID_SDK/ndk-bundle //此项目最高支持NDK14的版本，因此用下面的位置。
-$ export ANDROID_NDK=$ANDROID_SDK/android-ndk-r14b
-2. 下载ijkplayer源代码
-$ cd ~
-$ git clone https://github.com/Bilibili/ijkplayer.git ijkplayer-android
-$ cd ijkplayer-android
-$ git checkout -B latest k0.8.8
-3. 下载相关的android ffmpeg源代码
-$ ./init-android.sh
-4. 备份源码
-$ cd ~
-$ tar cvzf ijkplayer-android.tar.gz ijkplayer-android
-## 三、编译
-1. 用bash代替dash
-$ sudo dpkg-reconfigure dash
-选择NO
-如果新打开的shell，记得按“一1”配置ANDROID_SDK和ANDROID_NDK环境变量。
-2. 选择解码包
-(1)默认是较少的codec/format生成较小尺寸的包。
-(2)在(1)的基础上包含hevc功能
-(3)最多的codec/format
-如果选择(1)请直接到下一步。否则继续操作：
-$ cd ~/ijkplayer-android/config
-$ rm module.sh
-$ ln -s module-lite-hevc.sh module.sh  <<<< (2)
-$ ln -s module-default.sh module.sh    <<<< (3)
-注意，选择(2)需要为ffmpeg额外安装latm，选择(3)可能需要手动安装更多的外部库。
-3. 编译ffmepg
-$ cd ~/ijkplayer-android/android/contrib
-$ ./compile-ffmpeg.sh clean
-$ ./compile-ffmpeg.sh all
-成功进行下一步。
-如果报错：fatal error: linux/perf_event.h: No such file or directory
-$ vim ~/ijkplayer-android/config/module.sh
-在结尾加入这一行：
-export COMMON_FF_CFG_FLAGS="$COMMON_FF_CFG_FLAGS --disable-linux-perf"
-保存后执行
-$ ./compile-ffmpeg.sh clean
-$ ./compile-ffmpeg.sh all
-4. 编译ijkplayer
-$ cd ~/ijkplayer-android/android
-$ ./compile-ijk.sh all
-5. 备份成果
-$ cd ~
-$ tar cvzf ijkplayer-android-build.tar.gz ijkplayer-android
+## 二. 准备源码   
+`git clone https://github.com/Bilibili/ijkplayer.git ijkplayer-android`   
+`cd ijkplayer-android`   
+`git checkout -B latest k0.8.8`   
+`./init-android.sh`   
+等上面执行完,下面👇的代码看需要,作用是编译更多格式的.so   
+`cd config`   
+`rm module.sh`   
+`ln -s module-default.sh module.sh`   
+`cd ..`  
+## 三. 开始编译
+下面开始正式编译ffmpeg工作了,这是一个长长的过程,你喝喝茶摸摸鱼就等结束就好   
+`cd android/contrib`   
+`./compile-ffmpeg.sh clean`   
+`./compile-ffmpeg.sh all`   
+***
+如果在执行上一步👆时报个错"fatal error: linux/perf_event.h: No such file or directory",不要慌不要慌,执行下面:   
+`vim ~/ijkplayer-android/config/module.s`   
+`i`
+然后在末尾加上   
+`export COMMON_FF_CFG_FLAGS="$COMMON_FF_CFG_FLAGS --disable-linux-perf"`   
+然后   
+`esc`   
+`:wq`
+做完了最后再来一遍   
+`cd android/contrib`   
+`./compile-ffmpeg.sh clean`   
+`./compile-ffmpeg.sh all`   
+***
+到这儿ffmpeg的.so差不多就好了,然后就是编译ijkplayer   
+`cd ..`   
+`./compile-ijk.sh all`   
+再去喝杯茶差不多就结束了,然后整个编译过程就结束了,你可以愉快地去找到你想要的
