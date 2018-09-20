@@ -33,11 +33,13 @@
 `cd ijkplayer-android`   
 `git checkout -B latest k0.8.8`   
 `./init-android.sh`   
+***
 等上面执行完,下面👇的代码看需要,作用是编译更多格式的.so   
 `cd config`   
 `rm module.sh`   
 `ln -s module-default.sh module.sh`   
 `cd ..`  
+***
 ## 三. 开始编译
 下面开始正式编译ffmpeg工作了,这是一个长长的过程,你喝喝茶摸摸鱼就等结束就好   
 `cd android/contrib`   
@@ -46,12 +48,12 @@
 ***
 如果在执行上一步👆时报个错"fatal error: linux/perf_event.h: No such file or directory",不要慌不要慌,执行下面:   
 `vim ~/ijkplayer-android/config/module.s`   
-`i`
+`i`   
 然后在末尾加上   
-`export COMMON_FF_CFG_FLAGS="$COMMON_FF_CFG_FLAGS --disable-linux-perf"`   
+`export COMMON_FF_CFG_FLAGS="$COMMON_FF_CFG_FLAGS --disable-linux-perf"`    
 然后   
 `esc`   
-`:wq`
+`:wq`   
 做完了最后再来一遍   
 `cd android/contrib`   
 `./compile-ffmpeg.sh clean`   
